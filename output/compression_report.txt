@@ -1,0 +1,62 @@
+==========================================================================================
+BÁO CÁO KỸ THUẬT: ĐỀ TÀI 30 - NÉN ẢNH KHÔNG MẤT DỮ LIỆU (RLE & HUFFMAN)
+NHÓM 30: Trần Quốc Đạt (Trưởng Nhóm), Lê Văn Duy
+==========================================================================================
+
+[ẢNH NHỊ PHÂN (TÀI LIỆU)]:
+  - Shape: (512, 512), Orig: 262144 Bytes, Số mức: 2
+  - Entropy H(X): 0.7245 bits/symbol; theo kênh: Gray=0.7245
+  - Huffman L_avg: 1.0000 bit, dư thừa 0.2755, H <= L_avg < H+1: True
+  - Dải chạy: 2941 dải, độ dài TB 89.13, 1.3% dải dài 1
+  - RLE: 6883 B, CR 38.09x (Saving 97.4%, 0.210 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Huffman: 32797 B, CR 7.99x (Saving 87.5%, 1.001 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - RLE+Huffman: 4067 B, CR 64.46x (Saving 98.4%, 0.124 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Giải thích:
+      * Histogram có 2 mức khác nhau, H(X) = 0.7245 bit/pixel. Huffman đạt L_avg = 1.0000 bit (thỏa H <= L_avg < H+1: ĐÚNG), nên CR(Huffman) ~ 8/L_avg = 8.00x (thực tế 7.99x, chênh lệch nhỏ do header + bảng tần số).
+      * Huffman gán mỗi pixel ít nhất 1 bit nên với ảnh 2 mức L_avg = 1 bit dù H = 0.725 < 1 -> Huffman bị chặn ở 8x, không đạt được 8/H = 11.04x.
+      * Thống kê dải: 2941 dải, độ dài TB = 89.13 pixel, 1.3% dải dài 1. Mỗi dải tốn 2 byte nên RLE chỉ có lợi khi độ dài TB > 2 -> CR(RLE) ~ 38.16x (thực tế 38.09x).
+      * RLE vượt 8/H(X) vì 8/H(X) chỉ là giới hạn khi mã hóa TỪNG PIXEL ĐỘC LẬP (entropy bậc 0, chỉ dựa vào histogram); RLE khai thác thêm tương quan giữa các pixel liền kề mà histogram không thể hiện.
+      * Phương pháp tốt nhất cho ảnh này: RLE+Huffman (64.46x).
+
+[ẢNH NHỊ PHÂN (OTSU)]:
+  - Shape: (490, 735), Orig: 360150 Bytes, Số mức: 2
+  - Entropy H(X): 0.8849 bits/symbol; theo kênh: Gray=0.8849
+  - Huffman L_avg: 1.0000 bit, dư thừa 0.1151, H <= L_avg < H+1: True
+  - Dải chạy: 36714 dải, độ dài TB 9.81, 31.8% dải dài 1
+  - RLE: 73735 B, CR 4.88x (Saving 79.5%, 1.638 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Huffman: 45048 B, CR 7.99x (Saving 87.5%, 1.001 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - RLE+Huffman: 32036 B, CR 11.24x (Saving 91.1%, 0.712 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Giải thích:
+      * Histogram có 2 mức khác nhau, H(X) = 0.8849 bit/pixel. Huffman đạt L_avg = 1.0000 bit (thỏa H <= L_avg < H+1: ĐÚNG), nên CR(Huffman) ~ 8/L_avg = 8.00x (thực tế 7.99x, chênh lệch nhỏ do header + bảng tần số).
+      * Huffman gán mỗi pixel ít nhất 1 bit nên với ảnh 2 mức L_avg = 1 bit dù H = 0.885 < 1 -> Huffman bị chặn ở 8x, không đạt được 8/H = 9.04x.
+      * Thống kê dải: 36714 dải, độ dài TB = 9.81 pixel, 31.8% dải dài 1. Mỗi dải tốn 2 byte nên RLE chỉ có lợi khi độ dài TB > 2 -> CR(RLE) ~ 4.89x (thực tế 4.88x).
+      * Phương pháp tốt nhất cho ảnh này: RLE+Huffman (11.24x).
+
+[ẢNH XÁM]:
+  - Shape: (490, 735), Orig: 360150 Bytes, Số mức: 253
+  - Entropy H(X): 7.4222 bits/symbol; theo kênh: Gray=7.4222
+  - Huffman L_avg: 7.4574 bit, dư thừa 0.0352, H <= L_avg < H+1: True
+  - Dải chạy: 310103 dải, độ dài TB 1.16, 91.7% dải dài 1
+  - RLE: 620219 B, CR 0.58x (Saving -72.2%, 13.777 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Huffman: 337009 B, CR 1.07x (Saving 6.4%, 7.486 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - RLE+Huffman: 389118 B, CR 0.93x (Saving -8.0%, 8.643 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Giải thích:
+      * Histogram có 253 mức khác nhau, H(X) = 7.4222 bit/pixel. Huffman đạt L_avg = 7.4574 bit (thỏa H <= L_avg < H+1: ĐÚNG), nên CR(Huffman) ~ 8/L_avg = 1.07x (thực tế 1.07x, chênh lệch nhỏ do header + bảng tần số).
+      * Thống kê dải: 310103 dải, độ dài TB = 1.16 pixel, 91.7% dải dài 1. Mỗi dải tốn 2 byte nên RLE chỉ có lợi khi độ dài TB > 2 -> CR(RLE) ~ 0.58x (thực tế 0.58x).
+      * RLE làm PHÌNH dữ liệu vì các pixel liền kề trong ảnh tự nhiên thường khác nhau (dải rất ngắn) -> gần như mỗi pixel tốn 2 byte.
+      * Phương pháp tốt nhất cho ảnh này: Huffman (1.07x).
+
+[ẢNH MÀU RGB]:
+  - Shape: (490, 735, 3), Orig: 1080450 Bytes, Số mức: 256
+  - Entropy H(X): 7.5624 bits/symbol; theo kênh: B=6.9439, G=7.3300, R=7.7102, Tổng hợp=7.5624
+  - Huffman L_avg: 7.5859 bit, dư thừa 0.0235, H <= L_avg < H+1: True
+  - Dải chạy: 938731 dải, độ dài TB 1.15, 91.7% dải dài 1
+  - RLE: 1877475 B, CR 0.58x (Saving -73.8%, 41.704 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Huffman: 1025820 B, CR 1.05x (Saving 5.1%, 22.787 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - RLE+Huffman: 1190025 B, CR 0.91x (Saving -10.1%, 26.434 bpp) | Toàn vẹn: identical=True, MSE=0.0, PSNR=inf, SHA-256 match=True
+  - Giải thích:
+      * Histogram có 256 mức khác nhau, H(X) = 7.5624 bit/pixel. Huffman đạt L_avg = 7.5859 bit (thỏa H <= L_avg < H+1: ĐÚNG), nên CR(Huffman) ~ 8/L_avg = 1.05x (thực tế 1.05x, chênh lệch nhỏ do header + bảng tần số).
+      * Thống kê dải: 938731 dải, độ dài TB = 1.15 pixel, 91.7% dải dài 1. Mỗi dải tốn 2 byte nên RLE chỉ có lợi khi độ dài TB > 2 -> CR(RLE) ~ 0.58x (thực tế 0.58x).
+      * RLE làm PHÌNH dữ liệu vì các pixel liền kề trong ảnh tự nhiên thường khác nhau (dải rất ngắn) -> gần như mỗi pixel tốn 2 byte.
+      * Phương pháp tốt nhất cho ảnh này: Huffman (1.05x).
+
